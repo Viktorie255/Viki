@@ -14,6 +14,7 @@
         .timer { font-size: 24px; font-weight: bold; }
         .teams { display: flex; justify-content: space-around; margin: 20px; }
         .team { font-size: 20px; }
+        .new-game { margin-top: 20px; padding: 10px 20px; font-size: 18px; background: red; color: white; border: none; cursor: pointer; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -25,6 +26,7 @@
     <div class="container">
         <div class="grid" id="board"></div>
     </div>
+    <button class="new-game" onclick="resetGame()">Nová hra</button>
     <div class="question-box" id="questionBox">
         <h2 id="questionText"></h2>
         <button onclick="showAnswer()">Zobrazit odpověď</button>
@@ -48,6 +50,7 @@
         
         function generateBoard() {
             const board = document.getElementById("board");
+            board.innerHTML = "";
             categories.forEach(category => {
                 const header = document.createElement("div");
                 header.className = "cell";
@@ -57,7 +60,11 @@
                     const cell = document.createElement("div");
                     cell.className = "cell";
                     cell.textContent = q.points;
-                    cell.onclick = () => showQuestion(q, cell);
+                    cell.onclick = () => {
+                        showQuestion(q, cell);
+                        cell.classList.add("disabled"); // Změna barvy po kliknutí
+                        cell.onclick = null; // Zabránění dalším kliknutím
+                    };
                     board.appendChild(cell);
                 });
             });
@@ -82,6 +89,12 @@
             const scoreElement = document.getElementById(`score${team}`);
             scoreElement.textContent = parseInt(scoreElement.textContent) + 100; // Přidání bodů
             closeQuestion();
+        }
+        
+        function resetGame() {
+            document.getElementById("score1").textContent = "0";
+            document.getElementById("score2").textContent = "0";
+            generateBoard();
         }
         
         generateBoard();
