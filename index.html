@@ -100,7 +100,6 @@ function generateBoard() {
             console.error("Kategorie nemá žádné otázky:", category);
             return;
         }
-
         questions[category].forEach(q => {
             const cell = document.createElement("div");
             cell.className = "cell";
@@ -155,9 +154,7 @@ generateBoard();
     </script>
 </body>
 </html>
-
         };
-        
         function generateBoard() {
             const board = document.getElementById("board");
             board.innerHTML = "";
@@ -179,7 +176,6 @@ generateBoard();
                 });
             });
         }
-        
         function showQuestion(question, cell) {
             document.getElementById("questionText").textContent = question.question;
             document.getElementById("answerText").textContent = question.answer;
@@ -187,7 +183,6 @@ generateBoard();
             document.getElementById("questionBox").style.display = "block";
             startTimer();
         }
-        
         function startTimer() {
             let timeLeft = 60;
             document.getElementById("timer").textContent = timeLeft;
@@ -201,28 +196,23 @@ generateBoard();
                 }
             }, 1000);
         }
-        
         function showAnswer() {
             document.getElementById("answerText").style.display = "block";
         }
-        
         function closeQuestion() {
             document.getElementById("questionBox").style.display = "none";
             clearInterval(timerInterval);
         }
-        
         function addPoints(team) {
             const scoreElement = document.getElementById(`score${team}`);
             scoreElement.textContent = parseInt(scoreElement.textContent) + 100;
             closeQuestion();
         }
-        
         function resetGame() {
             document.getElementById("score1").textContent = "0";
             document.getElementById("score2").textContent = "0";
             generateBoard();
         }
-        
         generateBoard();
     </script>
 </body>
