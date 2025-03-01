@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riskuj - Party Edition</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #222; color: white; }
+        .container { max-width: 900px; margin: auto; }
+        .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+        .cell { background: blue; padding: 20px; cursor: pointer; font-size: 18px; font-weight: bold; border: 2px solid white; }
+        .cell.disabled { background: gray; cursor: default; }
+        .question-box { display: none; padding: 20px; background: white; color: black; border-radius: 10px; }
+        .timer { font-size: 24px; font-weight: bold; }
+        .teams { display: flex; justify-content: space-around; margin: 20px; }
+        .team { font-size: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Riskuj - Party Edition</h1>
+    <div class="teams">
+        <div class="team">Tým 1: <span id="score1">0</span></div>
+        <div class="team">Tým 2: <span id="score2">0</span></div>
+    </div>
+    <div class="container">
+        <div class="grid" id="board"></div>
+    </div>
+    <div class="question-box" id="questionBox">
+        <h2 id="questionText"></h2>
+        <button onclick="showAnswer()">Zobrazit odpověď</button>
+        <p id="answerText" style="display:none;"></p>
+        <p class="timer">Čas: <span id="timer">60</span> sekund</p>
+        <button onclick="addPoints(1)">Tým 1 správně</button>
+        <button onclick="addPoints(2)">Tým 2 správně</button>
+        <button onclick="closeQuestion()">Zavřít</button>
+    </div>
+    <script>
+        function generateBoard() {
+            const board = document.getElementById("board");
+            const categories = ["Showbusiness", "Sport", "Pojmy", "Hlavní města", "Lidské tělo", "Random zajímavosti"];
+            categories.forEach(category => {
+                const header = document.createElement("div");
+                header.className = "cell";
+                header.textContent = category;
+                board.appendChild(header);
+                for (let i = 100; i <= 500; i += 100) {
+                    const cell = document.createElement("div");
+                    cell.className = "cell";
+                    cell.textContent = i;
+                    board.appendChild(cell);
+                }
+            });
+        }
+        generateBoard();
+    </script>
+</body>
+</html>
