@@ -8,9 +8,9 @@
         body { font-family: Arial, sans-serif; text-align: center; background-color: #222; color: white; }
         .container { max-width: 900px; margin: auto; }
         .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
-        .cell { background: blue; padding: 20px; cursor: pointer; font-size: 18px; font-weight: bold; border: 2px solid white; }
+        .cell { background: blue; padding: 20px; cursor: pointer; font-size: 18px; font-weight: bold; border: 2px solid white; color: white; }
         .cell.disabled { background: gray; cursor: default; }
-        .question-box { display: none; padding: 20px; background: white; color: black; border-radius: 10px; }
+        .question-box { display: none; padding: 20px; background: white; color: black; border-radius: 10px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50%; }
         .timer { font-size: 24px; font-weight: bold; }
         .teams { display: flex; justify-content: space-around; margin: 20px; }
         .team { font-size: 20px; }
@@ -35,22 +35,55 @@
         <button onclick="closeQuestion()">Zavřít</button>
     </div>
     <script>
+        const categories = ["Showbusiness", "Sport", "Pojmy", "Hlavní města", "Lidské tělo", "Random zajímavosti"];
+        const questions = {
+            "Showbusiness": [
+                { points: 100, question: "S kým je teď Karlos Vémola ženatý?", answer: "S Lelou Ceterovou." },
+                { points: 200, question: "Kolik manželů měla Agáta Hanychová?", answer: "Dva - Jakub Prachař a Miroslav Dopita." },
+                { points: 300, question: "Čím se proslavila Mia Khalifa?", answer: "Bývalá herečka z filmů pro dospělé." },
+                { points: 400, question: "Jak se jmenuje firma Jana Šolfronka?", answer: "Pokélandia s.r.o." },
+                { points: 500, question: "Kdo má údajně největší nádobíčko v českém showbusinessu?", answer: "Leoš Mareš nebo Dalibor Janda." }
+            ]
+        };
+        
         function generateBoard() {
             const board = document.getElementById("board");
-            const categories = ["Showbusiness", "Sport", "Pojmy", "Hlavní města", "Lidské tělo", "Random zajímavosti"];
             categories.forEach(category => {
                 const header = document.createElement("div");
                 header.className = "cell";
                 header.textContent = category;
                 board.appendChild(header);
-                for (let i = 100; i <= 500; i += 100) {
+                questions[category].forEach(q => {
                     const cell = document.createElement("div");
                     cell.className = "cell";
-                    cell.textContent = i;
+                    cell.textContent = q.points;
+                    cell.onclick = () => showQuestion(q, cell);
                     board.appendChild(cell);
-                }
+                });
             });
         }
+        
+        function showQuestion(question, cell) {
+            document.getElementById("questionText").textContent = question.question;
+            document.getElementById("answerText").textContent = question.answer;
+            document.getElementById("answerText").style.display = "none";
+            document.getElementById("questionBox").style.display = "block";
+        }
+        
+        function showAnswer() {
+            document.getElementById("answerText").style.display = "block";
+        }
+        
+        function closeQuestion() {
+            document.getElementById("questionBox").style.display = "none";
+        }
+        
+        function addPoints(team) {
+            const scoreElement = document.getElementById(`score${team}`);
+            scoreElement.textContent = parseInt(scoreElement.textContent) + 100; // Přidání bodů
+            closeQuestion();
+        }
+        
         generateBoard();
     </script>
 </body>
