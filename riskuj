@@ -1,0 +1,99 @@
+import React, { useState } from "react";
+
+const categories = [
+  {
+    name: "Showbusiness český rybníček",
+    questions: [
+      { points: 100, question: "S kým je teď Karlos Vémola ženatý?", answer: "S Lelou Ceterovou." },
+      { points: 200, question: "Kolik manželů měla Agáta Hanychová?", answer: "Dva - Jakub Prachař a Miroslav Dopita." },
+      { points: 300, question: "Čím se proslavila Mia Khalifa?", answer: "Bývalá herečka z filmů pro dospělé." },
+      { points: 400, question: "Jak se jmenuje firma Jana Šolfronka?", answer: "Pokélandia s.r.o." },
+      { points: 500, question: "Kdo má údajně největší nádobíčko v českém showbusinessu?", answer: "Leoš Mareš nebo Dalibor Janda." }
+    ]
+  },
+  {
+    name: "Sport",
+    questions: [
+      { points: 100, question: "Vyjmenuj 3 disciplíny z moderního pětiboje.", answer: "Šerm, plavání, parkur, střelba, běh." },
+      { points: 200, question: "Kdo je nejúspěšnější český hokejista v NHL?", answer: "Jaromír Jágr." },
+      { points: 300, question: "Když tým udělá double klik.", answer: "Jeden člověk je dole a dělá klik, druhý na něm. Ruce má na kotnících spodního člověka a nohy na jeho ramenou. Klik udělají najednou." },
+      { points: 400, question: "Který tým vyhrál nejvíce titulů v anglické Premier League?", answer: "Manchester United." },
+      { points: 500, question: "Kdo byl nejmladší mistr světa ve Formuli 1?", answer: "Sebastian Vettel (ve 23 letech)." }
+    ]
+  }
+];
+
+const Riskuj = () => {
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
+  const [teamScores, setTeamScores] = useState({ team1: 0, team2: 0 });
+
+  const selectQuestion = (categoryIndex, questionIndex) => {
+    const questionKey = `${categoryIndex}-${questionIndex}`;
+    if (answeredQuestions.has(questionKey)) return;
+    setSelectedQuestion({ categoryIndex, questionIndex });
+    setShowAnswer(false);
+  };
+
+  const markAnswered = (team) => {
+    if (!selectedQuestion) return;
+    const questionKey = `${selectedQuestion.categoryIndex}-${selectedQuestion.questionIndex}`;
+    setAnsweredQuestions(new Set([...answeredQuestions, questionKey]));
+    if (team) {
+      setTeamScores((prev) => ({ ...prev, [team]: prev[team] + categories[selectedQuestion.categoryIndex].questions[selectedQuestion.questionIndex].points }));
+    }
+    setSelectedQuestion(null);
+  };
+
+  return (
+    <div className="p-4">
+      <h1 className="text-3xl font-bold text-center mb-4">Riskuj</h1>
+      <div className="grid grid-cols-2 gap-4">
+        {categories.map((category, categoryIndex) => (
+          <div key={categoryIndex} className="border p-2">
+            <h2 className="text-xl font-bold text-center">{category.name}</h2>
+            <div className="grid grid-cols-5 gap-2 mt-2">
+              {category.questions.map((q, questionIndex) => {
+                const questionKey = `${categoryIndex}-${questionIndex}`;
+                return (
+                  <button
+                    key={questionIndex}
+                    className={`p-2 border text-center ${answeredQuestions.has(questionKey) ? 'bg-gray-300' : 'bg-blue-500 text-white'}`}
+                    onClick={() => selectQuestion(categoryIndex, questionIndex)}
+                  >
+                    {q.points}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      {selectedQuestion !== null && (
+        <div className="fixed top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg text-center">
+            <h2 className="text-xl font-bold">{categories[selectedQuestion.categoryIndex].questions[selectedQuestion.questionIndex].question}</h2>
+            {!showAnswer ? (
+              <button className="mt-4 px-4 py-2 bg-green-500 text-white" onClick={() => setShowAnswer(true)}>Zobrazit odpověď</button>
+            ) : (
+              <p className="mt-4 font-bold">{categories[selectedQuestion.categoryIndex].questions[selectedQuestion.questionIndex].answer}</p>
+            )}
+            <div className="mt-4 flex justify-center gap-4">
+              <button className="px-4 py-2 bg-blue-500 text-white" onClick={() => markAnswered('team1')}>Body tým 1</button>
+              <button className="px-4 py-2 bg-red-500 text-white" onClick={() => markAnswered('team2')}>Body tým 2</button>
+              <button className="px-4 py-2 bg-gray-500 text-white" onClick={() => markAnswered(null)}>Nikomu</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="mt-6 text-center">
+        <h2 className="text-2xl font-bold">Skóre</h2>
+        <p>Tým 1: {teamScores.team1} bodů</p>
+        <p>Tým 2: {teamScores.team2} bodů</p>
+      </div>
+    </div>
+  );
+};
+
+export default Riskuj;
