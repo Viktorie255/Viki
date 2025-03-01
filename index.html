@@ -38,7 +38,6 @@
     </div>
     <script>
         let timerInterval;
-        
         const categories = ["Showbusiness", "Sport", "Pojmy", "Hlavní města", "Lidské tělo", "Random zajímavosti"];
         const questions = {
             "Showbusiness": [
@@ -86,66 +85,18 @@
         <button onclick="closeQuestion()">Zavřít</button>
     </div>
     <script>
-        let timerInterval;
-        
-        const categories = ["Showbusiness", "Sport", "Pojmy", "Hlavní města", "Lidské tělo", "Random zajímavosti"];
-        
-        const questions = {
-            "Showbusiness": [
-                { points: 100, question: "S kým je teď Karlos Vémola ženatý?", answer: "S Lelou Ceterovou." },
-                { points: 200, question: "Kolik manželů měla Agáta Hanychová?", answer: "Dva - Jakub Prachař a Miroslav Dopita." },
-                { points: 300, question: "Čím se proslavila Mia Khalifa?", answer: "Bývalá herečka z filmů pro dospělé." },
-                { points: 400, question: "Jak se jmenuje firma Jana Šolfronka?", answer: "Pokélandia s.r.o." },
-                { points: 500, question: "Kdo má údajně největší nádobíčko v českém showbusinessu?", answer: "Leoš Mareš nebo Dalibor Janda." }
-            ],
-            "Sport": [
-                { points: 100, question: "Vyjmenuj 3 disciplíny z moderního pětiboje.", answer: "Šerm, plavání, parkur, střelba, běh." },
-                { points: 200, question: "Kdo je nejúspěšnější český hokejista v NHL?", answer: "Jaromír Jágr." },
-                { points: 300, question: "Když tým udělá double klik.", answer: "Jeden člověk je dole a dělá klik, druhý na něm. Klik udělají najednou." },
-                { points: 400, question: "Který tým vyhrál nejvíce titulů v anglické Premier League?", answer: "Manchester United." },
-                { points: 500, question: "Kdo byl nejmladší mistr světa ve Formuli 1?", answer: "Sebastian Vettel (ve 23 letech)." }
-                ],
-    "Pojmy": [
-        { points: 100, question: "Co znamená 'slay' ve slangu Gen Z?", answer: "Být úspěšný, vypadat skvěle." },
-        { points: 200, question: "Zlatá cihlička!", answer: "Když tým zazpívá písničku." },
-        { points: 300, question: "Co znamená 'zymologie'?", answer: "Věda o pivu a fermentaci." },
-        { points: 400, question: "Co znamená 'cowboy testicles' v angličtině?", answer: "Hovězí varlata, známá jako delikatesa ‚Rocky Mountain oysters‘." },
-        { points: 500, question: "Co znamená 'Deutschlandtempo', německé slovo roku 2023?", answer: "Rychlá modernizace a efektivita." }
-    ],
-    "Hlavní města": [
-        { points: 100, question: "Zlatá cihlička za panáka - pij a dostaneš body", answer: "Na zdraví!" },
-        { points: 200, question: "Hlavní město Austrálie?", answer: "Canberra." },
-        { points: 300, question: "Které hlavní město leží nejblíže rovníku?", answer: "Quito (Ekvádor)." },
-        { points: 400, question: "Které hlavní město má nejvíce obyvatel?", answer: "Tokio (Japonsko)." },
-        { points: 500, question: "Které hlavní město je známé největším počtem nevěstinců na světě?", answer: "Bangkok (Thajsko)." }
-    ],
-    "Lidské tělo": [
-        { points: 100, question: "Jaká je nejmenší kost v lidském těle?", answer: "Třmínek v uchu." },
-        { points: 200, question: "V kolika letech v průměru začínají mužům vypadávat vlasy?", answer: "Kolem 30 let." },
-        { points: 300, question: "Jaká část těla má nejvíce nervových zakončení?", answer: "Konečky prstů, rty a klitoris." },
-        { points: 400, question: "Jaká je průměrná délka erekce?", answer: "5 až 7 minut (u průměrného muže, ne v pornu 😆)." },
-        { points: 500, question: "Kolik měří nejmenší člověk na světě?", answer: "Nejmenší muž: 54,6 cm (Chandra Bahadur Dangi)." }
-    ],
-    "Random zajímavosti": [
-        { points: 100, question: "Z jaké země je nejprodávanější značka piva na světě?", answer: "Snow Beer (Čína)." },
-        { points: 200, question: "Jaká byla největší zaznamenaná délka penisu? Rozmezí +- 10 %.", answer: "48 cm (měřeno, ale neověřeno 😆)." },
-        { points: 300, question: "Jaká nejdivnější věc byla kdy prodána na eBay za cca 10 000 Kč?", answer: "„Neviditelný přítel“." },
-        { points: 400, question: "Která země má nejdelší národní hymnu?", answer: "Řecko (158 slok!)." },
-        { points: 500, question: "Jaké je nejčastější poslední slovo umírajících pilotů?", answer: "„Do prdele…“ (podle černých skříněk leteckých nehod)." }
-    ]
-        };
-        
-   function generateBoard() {
+        let timerInterval; // Oprava chybějící globální proměnné
+function generateBoard() {
     const board = document.getElementById("board");
     board.innerHTML = "";
-    
+
     categories.forEach(category => {
         const header = document.createElement("div");
         header.className = "cell";
         header.textContent = category;
         board.appendChild(header);
-        
-        if (!questions[category]) {
+
+        if (!questions[category] || questions[category].length === 0) {
             console.error("Kategorie nemá žádné otázky:", category);
             return;
         }
@@ -163,7 +114,6 @@
         });
     });
 }
-
 function showQuestion(question, cell) {
     document.getElementById("questionText").textContent = question.question;
     document.getElementById("answerText").textContent = question.answer;
@@ -171,9 +121,8 @@ function showQuestion(question, cell) {
     document.getElementById("questionBox").style.display = "block";
     startTimer();
 }
-
 function startTimer() {
-    clearInterval(timerInterval);  // Zabraňuje vícenásobnému spuštění
+    clearInterval(timerInterval);  // Zabraňuje opakovanému spouštění
     let timeLeft = 60;
     document.getElementById("timer").textContent = timeLeft;
     timerInterval = setInterval(() => {
@@ -185,28 +134,23 @@ function startTimer() {
         }
     }, 1000);
 }
-
 function showAnswer() {
     document.getElementById("answerText").style.display = "block";
 }
-
 function closeQuestion() {
     document.getElementById("questionBox").style.display = "none";
     clearInterval(timerInterval);
 }
-
 function addPoints(team) {
     const scoreElement = document.getElementById(`score${team}`);
     scoreElement.textContent = parseInt(scoreElement.textContent) + 100;
     closeQuestion();
 }
-
 function resetGame() {
     document.getElementById("score1").textContent = "0";
     document.getElementById("score2").textContent = "0";
     generateBoard();
 }
-
 generateBoard();
     </script>
 </body>
