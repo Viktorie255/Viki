@@ -135,72 +135,79 @@
     ]
         };
         
-        function generateBoard() {
-            const board = document.getElementById("board");
-            board.innerHTML = "";
-            categories.forEach(category => {
-                const header = document.createElement("div");
-                header.className = "cell";
-                header.textContent = category;
-                board.appendChild(header);
-                questions[category].forEach(q => {
-                    const cell = document.createElement("div");
-                    cell.className = "cell";
-                    cell.textContent = q.points;
-                    cell.onclick = () => {
-                        showQuestion(q, cell);
-                        cell.classList.add("disabled");
-                        cell.onclick = null;
-                    };
-                    board.appendChild(cell);
-                });
-            });
-        }
+   function generateBoard() {
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+    
+    categories.forEach(category => {
+        const header = document.createElement("div");
+        header.className = "cell";
+        header.textContent = category;
+        board.appendChild(header);
         
-        function showQuestion(question, cell) {
-            document.getElementById("questionText").textContent = question.question;
-            document.getElementById("answerText").textContent = question.answer;
-            document.getElementById("answerText").style.display = "none";
-            document.getElementById("questionBox").style.display = "block";
-            startTimer();
+        if (!questions[category]) {
+            console.error("Kategorie nemá žádné otázky:", category);
+            return;
         }
-        
-        function startTimer() {
-            let timeLeft = 60;
-            document.getElementById("timer").textContent = timeLeft;
+
+        questions[category].forEach(q => {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            cell.textContent = q.points;
+            cell.onclick = () => {
+                showQuestion(q, cell);
+                cell.classList.add("disabled");
+                cell.onclick = null;
+            };
+            board.appendChild(cell);
+        });
+    });
+}
+
+function showQuestion(question, cell) {
+    document.getElementById("questionText").textContent = question.question;
+    document.getElementById("answerText").textContent = question.answer;
+    document.getElementById("answerText").style.display = "none";
+    document.getElementById("questionBox").style.display = "block";
+    startTimer();
+}
+
+function startTimer() {
+    clearInterval(timerInterval);  // Zabraňuje vícenásobnému spuštění
+    let timeLeft = 60;
+    document.getElementById("timer").textContent = timeLeft;
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = timeLeft;
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById("timer").textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    closeQuestion();
-                }
-            }, 1000);
-        }
-        
-        function showAnswer() {
-            document.getElementById("answerText").style.display = "block";
-        }
-        
-        function closeQuestion() {
-            document.getElementById("questionBox").style.display = "none";
-            clearInterval(timerInterval);
-        }
-        
-        function addPoints(team) {
-            const scoreElement = document.getElementById(`score${team}`);
-            scoreElement.textContent = parseInt(scoreElement.textContent) + 100;
             closeQuestion();
         }
-        
-        function resetGame() {
-            document.getElementById("score1").textContent = "0";
-            document.getElementById("score2").textContent = "0";
-            generateBoard();
-        }
-        
-        generateBoard();
+    }, 1000);
+}
+
+function showAnswer() {
+    document.getElementById("answerText").style.display = "block";
+}
+
+function closeQuestion() {
+    document.getElementById("questionBox").style.display = "none";
+    clearInterval(timerInterval);
+}
+
+function addPoints(team) {
+    const scoreElement = document.getElementById(`score${team}`);
+    scoreElement.textContent = parseInt(scoreElement.textContent) + 100;
+    closeQuestion();
+}
+
+function resetGame() {
+    document.getElementById("score1").textContent = "0";
+    document.getElementById("score2").textContent = "0";
+    generateBoard();
+}
+
+generateBoard();
     </script>
 </body>
 </html>
